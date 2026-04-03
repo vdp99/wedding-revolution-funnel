@@ -366,19 +366,31 @@
       }, 180);
     }
 
+    const REDIRECT = {
+      'poche-richieste':  '/percorso-1-poche-richieste.html',
+      'poche-conversioni': '/percorso-2-poche-conversioni.html',
+      'poco-margine':     '/percorso-3-poco-margine.html',
+    };
+
     function handleSubmit(e) {
       e.preventDefault();
-      if (!document.getElementById('campo-percorso').value) {
+
+      const percorso = document.getElementById('campo-percorso').value;
+
+      // Nessun percorso selezionato
+      if (!percorso) {
         document.getElementById('avviso-card').style.display = 'block';
         document.querySelector('.percorso-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
-      // TODO: integra con il tuo sistema CRM / email
-      console.log('Invio:', {
-        nome: document.getElementById('campo-nome').value,
-        email: document.getElementById('campo-email').value,
-        percorso: document.getElementById('campo-percorso').value,
-      });
+
+      // Validazione campi (il browser valida required, ma doppio controllo)
+      const nome  = document.getElementById('campo-nome').value.trim();
+      const email = document.getElementById('campo-email').value.trim();
+      if (!nome || !email) return;
+
+      // Redirect alla pagina del percorso scelto
+      window.location.href = REDIRECT[percorso];
     }
   </script>
 
