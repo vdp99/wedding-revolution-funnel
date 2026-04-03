@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scegli il tuo percorso — Wedding Revolution</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#D4A017',
+            'gold-light': '#F0C040',
+            dark: '#0A0A0A',
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+            label: ['Montserrat', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background-color: #0A0A0A;
+      background-image:
+        radial-gradient(ellipse 65% 45% at 85% 15%, rgba(212,160,23,0.09) 0%, transparent 55%),
+        radial-gradient(ellipse 45% 35% at 8% 85%, rgba(212,160,23,0.06) 0%, transparent 50%),
+        radial-gradient(ellipse 30% 40% at 50% 55%, rgba(212,160,23,0.03) 0%, transparent 60%);
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      opacity: 0.5;
+      z-index: 100;
+    }
+
+    /* Hero initial state */
+    #hero-label, #hero-headline, #hero-sub { opacity: 0; transform: translateY(28px); }
+
+    /* Form inputs */
+    .wr-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 16px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    .wr-input:focus {
+      border-color: #D4A017;
+      background: rgba(212,160,23,0.04);
+    }
+    .wr-input::placeholder { color: rgba(255,255,255,0.25); }
+
+    /* Card */
+    .percorso-card {
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 32px 28px;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .percorso-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #D4A017, transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .percorso-card:hover { border-color: rgba(212,160,23,0.5); background: rgba(212,160,23,0.03); }
+    .percorso-card:hover::before { opacity: 1; }
+    .percorso-card:hover .card-icon { color: rgba(212,160,23,0.7); }
+    .percorso-card.selected { border-color: #D4A017; background: rgba(212,160,23,0.07); }
+    .percorso-card.selected::before { opacity: 1; }
+    .percorso-card.selected .card-icon { color: #D4A017; }
+    .percorso-card.selected .select-ring { border-color: #D4A017; }
+    .percorso-card.selected .select-dot { transform: scale(1); }
+
+    .card-icon { color: rgba(255,255,255,0.35); transition: color 0.25s; }
+
+    .select-ring {
+      width: 20px; height: 20px;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.25s;
+      margin-top: 24px;
+    }
+    .select-dot {
+      width: 10px; height: 10px;
+      background: #D4A017;
+      transform: scale(0);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* CTA button */
+    .cta-btn {
+      width: 100%;
+      background: #D4A017;
+      color: #0A0A0A;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 20px 40px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .cta-btn:hover { background: #F0C040; }
+
+    /* Gold divider */
+    .gold-divider { border: none; border-top: 1px solid #D4A017; }
+  </style>
+</head>
+
+<body class="text-white min-h-screen font-sans">
+
+  <!-- ── HEADER ─────────────────────────────────────────── -->
+  <header style="border-bottom: 1px solid rgba(255,255,255,0.08);" class="px-6 md:px-16 py-5 flex items-center justify-between">
+    <img src="brand-assets/LOGO-WR.webp" alt="Wedding Revolution" class="h-10 md:h-11 object-contain">
+    <span class="font-label text-[10px] tracking-[0.22em] text-gold uppercase hidden sm:block">Matrimoney Tour</span>
+  </header>
+
+
+  <!-- ── HERO ───────────────────────────────────────────── -->
+  <section class="px-6 md:px-16 pt-14 pb-10 max-w-5xl mx-auto">
+    <p id="hero-label" class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-5">Il tuo prossimo passo</p>
+    <h1 id="hero-headline" class="font-display font-black text-5xl sm:text-6xl md:text-7xl lg:text-[82px] leading-[1.03] text-white mb-5">
+      Scegli il tuo<br>percorso.
+    </h1>
+    <p id="hero-sub" class="font-sans text-base md:text-lg text-white/55 max-w-md leading-relaxed">
+      Tre problemi diversi. Tre soluzioni precise.<br>Niente di generico.
+    </p>
+  </section>
+
+  <!-- Gold line -->
+  <div class="px-6 md:px-16 max-w-5xl mx-auto pb-10">
+    <hr class="gold-divider w-14">
+  </div>
+
+
+  <!-- ── INTRO 3 RIGHE ──────────────────────────────────── -->
+  <section class="px-6 md:px-16 pb-10 max-w-5xl mx-auto">
+    <!-- Mobile: compatto in colonna singola -->
+    <div class="flex flex-col gap-2 md:hidden">
+      <p class="intro-line text-white/55 text-sm leading-relaxed">Hai partecipato al Matrimoney Tour. Ora sai che qualcosa deve cambiare.</p>
+      <p class="intro-line text-white/55 text-sm leading-relaxed">Il problema è un punto preciso. Scegli il tuo ostacolo principale — riceverai risorse costruite esattamente per quello.</p>
+    </div>
+    <!-- Desktop: 3 colonne -->
+    <div class="hidden md:grid md:grid-cols-3 gap-10">
+      <p class="intro-line text-white/60 text-base leading-relaxed">
+        Hai partecipato al Matrimoney Tour. Ora sai che qualcosa nel tuo business deve cambiare.
+      </p>
+      <p class="intro-line text-white/60 text-base leading-relaxed">
+        Il problema non è il mercato, non sono i clienti. È il punto esatto dove il tuo business si inceppa.
+      </p>
+      <p class="intro-line text-white/60 text-base leading-relaxed">
+        Scegli l'ostacolo principale. Riceverai contenuti costruiti esattamente per quello — nessuna risposta generica.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ── TRE CARD ───────────────────────────────────────── -->
+  <section class="px-6 md:px-16 pb-10 max-w-5xl mx-auto">
+    <div class="grid md:grid-cols-3 gap-4 md:gap-5">
+
+      <!-- Card A: Poche richieste -->
+      <div class="percorso-card" data-percorso="poche-richieste" data-label="Percorso A — Poche richieste" onclick="selectCard(this)">
+        <div class="card-icon mb-6">
+          <!-- Megafono / visibilità -->
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 11 L5 19 Q5 20 6 20 L10 20 L22 26 L22 4 L10 10 L6 10 Q5 10 5 11 Z"/>
+            <path d="M10 10 L10 20"/>
+            <path d="M25 12 Q27 15 25 18"/>
+          </svg>
+        </div>
+        <div class="font-label text-[9px] tracking-[0.25em] text-gold/55 uppercase mb-3">Percorso A</div>
+        <h3 class="font-display text-2xl md:text-[26px] font-bold text-white mb-3 leading-[1.1]">Poche<br>richieste</h3>
+        <p class="text-white/45 text-sm leading-relaxed">
+          Hai un buon servizio ma non arrivi abbastanza clienti. Il problema è a monte: visibilità, posizionamento, messaggi che non attirano.
+        </p>
+        <div class="select-ring"><div class="select-dot"></div></div>
+      </div>
+
+      <!-- Card B: Poche conversioni -->
+      <div class="percorso-card" data-percorso="poche-conversioni" data-label="Percorso B — Poche conversioni" onclick="selectCard(this)">
+        <div class="card-icon mb-6">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4 24 10 16 16 20 26 8"/>
+            <polyline points="20 8 26 8 26 14"/>
+          </svg>
+        </div>
+        <div class="font-label text-[9px] tracking-[0.25em] text-gold/55 uppercase mb-3">Percorso B</div>
+        <h3 class="font-display text-2xl md:text-[26px] font-bold text-white mb-3 leading-[1.1]">Poche<br>conversioni</h3>
+        <p class="text-white/45 text-sm leading-relaxed">
+          Ricevi richieste ma pochi diventano clienti. Il problema è nella vendita: presentazione, follow-up, fiducia che non si costruisce.
+        </p>
+        <div class="select-ring"><div class="select-dot"></div></div>
+      </div>
+
+      <!-- Card C: Poco margine -->
+      <div class="percorso-card" data-percorso="poco-margine" data-label="Percorso C — Poco margine" onclick="selectCard(this)">
+        <div class="card-icon mb-6">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="15" cy="15" r="12"/>
+            <path d="M15 7 L15 9.5"/>
+            <path d="M15 20.5 L15 23"/>
+            <path d="M10.5 11.5 Q10.5 9.5 15 9.5 Q19.5 9.5 19.5 12.5 Q19.5 15.5 15 15.5 Q10.5 15.5 10.5 18.5 Q10.5 20.5 15 20.5 Q19.5 20.5 19.5 18.5"/>
+          </svg>
+        </div>
+        <div class="font-label text-[9px] tracking-[0.25em] text-gold/55 uppercase mb-3">Percorso C</div>
+        <h3 class="font-display text-2xl md:text-[26px] font-bold text-white mb-3 leading-[1.1]">Poco<br>margine</h3>
+        <p class="text-white/45 text-sm leading-relaxed">
+          Lavori tanto ma guadagni poco. Il problema è nel pricing e nel valore percepito: stai vendendo sotto il tuo potenziale reale.
+        </p>
+        <div class="select-ring"><div class="select-dot"></div></div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── SOCIAL PROOF ───────────────────────────────────── -->
+  <section class="px-6 md:px-16 pb-10 max-w-5xl mx-auto">
+    <div class="flex items-center gap-5">
+      <hr class="gold-divider flex-none w-10">
+      <p class="font-label text-[10px] tracking-[0.18em] text-gold uppercase whitespace-nowrap">
+        Già scelto da 2.000+ professionisti del matrimonio
+      </p>
+      <hr class="gold-divider flex-1">
+    </div>
+  </section>
+
+
+  <!-- ── FORM ───────────────────────────────────────────── -->
+  <section id="form-section" class="px-6 md:px-16 pb-20 max-w-5xl mx-auto">
+    <form id="percorso-form" onsubmit="handleSubmit(event)" class="max-w-lg" novalidate>
+      <input type="hidden" id="campo-percorso" name="percorso" value="">
+
+      <!-- Nome -->
+      <div class="mb-5">
+        <label class="font-label text-[9px] tracking-[0.22em] text-white/40 uppercase block mb-2">Il tuo nome</label>
+        <input type="text" name="nome" placeholder="Come ti chiami?" required class="wr-input" id="campo-nome">
+      </div>
+
+      <!-- Email -->
+      <div class="mb-7">
+        <label class="font-label text-[9px] tracking-[0.22em] text-white/40 uppercase block mb-2">La tua email</label>
+        <input type="email" name="email" placeholder="La tua email professionale" required class="wr-input" id="campo-email">
+      </div>
+
+      <!-- Percorso selezionato — feedback -->
+      <div id="feedback-percorso" style="display:none; margin-bottom:24px;">
+        <div style="border:1px solid rgba(212,160,23,0.35); background:rgba(212,160,23,0.06); padding:14px 18px; display:flex; align-items:center; gap:12px;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1.5 7 5.5 11 12.5 3"/>
+          </svg>
+          <span id="feedback-testo" class="font-label text-[10px] tracking-[0.15em] text-gold uppercase"></span>
+        </div>
+      </div>
+
+      <!-- Nessuna card selezionata — avviso -->
+      <div id="avviso-card" style="display:none; margin-bottom:24px;">
+        <p class="font-sans text-xs text-gold/70">Seleziona prima un percorso dalle card qui sopra.</p>
+      </div>
+
+      <!-- CTA -->
+      <button type="submit" class="cta-btn mb-5">
+        INIZIA IL MIO PERCORSO GRATUITO
+      </button>
+
+      <!-- Rassicurazioni -->
+      <p class="font-sans text-xs text-white/25 text-center leading-relaxed">
+        Nessuna carta di credito. Nessun obbligo.<br>
+        Solo il passo successivo per far crescere il tuo business nel wedding.
+      </p>
+    </form>
+  </section>
+
+
+  <!-- ── FOOTER ─────────────────────────────────────────── -->
+  <footer style="border-top:1px solid rgba(255,255,255,0.08);" class="px-6 md:px-16 py-8">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <img src="brand-assets/Logo-Footer-Wedding.webp" alt="Wedding Revolution" class="h-8 object-contain opacity-50">
+      <p class="font-sans text-xs text-white/25 text-center sm:text-right">
+        Stefano e Roberto — Wedding Revolution<br>
+        <span class="text-white/15">© 2024 Wedding Revolution. Tutti i diritti riservati.</span>
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ── SCRIPT ─────────────────────────────────────────── -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Hero entrance
+    gsap.timeline({ delay: 0.15 })
+      .to('#hero-label',    { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' })
+      .to('#hero-headline', { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out' }, '-=0.25')
+      .to('#hero-sub',      { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.35');
+
+    // Intro lines
+    gsap.from('.intro-line', {
+      scrollTrigger: { trigger: '.intro-line', start: 'top 88%' },
+      opacity: 0, y: 22, stagger: 0.13, duration: 0.65, ease: 'power2.out'
+    });
+
+    // Cards
+    gsap.from('.percorso-card', {
+      scrollTrigger: { trigger: '.percorso-card', start: 'top 88%' },
+      opacity: 0, y: 28, stagger: 0.1, duration: 0.7, ease: 'power3.out'
+    });
+
+
+    // Card selection
+    function selectCard(card) {
+      document.querySelectorAll('.percorso-card').forEach(c => {
+        c.classList.remove('selected');
+        c.querySelector('.select-dot').style.transform = 'scale(0)';
+      });
+
+      card.classList.add('selected');
+      card.querySelector('.select-dot').style.transform = 'scale(1)';
+
+      const percorso = card.dataset.percorso;
+      const label    = card.dataset.label;
+
+      document.getElementById('campo-percorso').value = percorso;
+      document.getElementById('feedback-testo').textContent = label;
+      document.getElementById('feedback-percorso').style.display = 'block';
+      document.getElementById('avviso-card').style.display = 'none';
+
+      // Scroll form into view
+      setTimeout(() => {
+        document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 180);
+    }
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      if (!document.getElementById('campo-percorso').value) {
+        document.getElementById('avviso-card').style.display = 'block';
+        document.querySelector('.percorso-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // TODO: integra con il tuo sistema CRM / email
+      console.log('Invio:', {
+        nome: document.getElementById('campo-nome').value,
+        email: document.getElementById('campo-email').value,
+        percorso: document.getElementById('campo-percorso').value,
+      });
+    }
+  </script>
+
+</body>
+</html>
