@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Check-Up — Wedding Revolution</title>
+  <meta name="description" content="La diagnosi completa della tua azienda nel matrimonio. Capisci dove stai perdendo le coppie e cosa ti serve davvero per tornare a crescere.">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#D4A017',
+            'gold-light': '#F0C040',
+            dark: '#0A0A0A',
+            'dark-2': '#111111',
+            'dark-3': '#161616',
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'serif'],
+            sans: ['Inter', 'sans-serif'],
+            label: ['Montserrat', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@400;500;600&family=Montserrat:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #0A0A0A;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Grain texture overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      opacity: 0.5;
+      z-index: 200;
+    }
+
+    /* Hero initial states */
+    #hero-tag, #hero-h1, #hero-sub, #hero-cta-wrap, #hero-bar {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+
+    /* Hero section */
+    .hero-section {
+      min-height: 100vh;
+      background:
+        linear-gradient(to bottom, rgba(10,10,10,0.65) 0%, rgba(10,10,10,0.5) 40%, rgba(10,10,10,0.92) 100%),
+        url('https://images.unsplash.com/photo-1511578314322-379afb476865?w=1600') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 100px;
+      padding-bottom: 80px;
+    }
+
+    /* Section alternating — with subtle radial depth */
+    .s-black  {
+      background: #0A0A0A;
+      background-image: radial-gradient(ellipse 70% 50% at 80% 30%, rgba(212,160,23,0.04) 0%, transparent 70%);
+    }
+    .s-dark   {
+      background: #111111;
+      background-image: radial-gradient(ellipse 60% 50% at 20% 60%, rgba(212,160,23,0.05) 0%, transparent 70%);
+    }
+    .s-dark3  { background: #161616; }
+    .s-gold   { background: #D4A017; }
+
+    /* Gold accent */
+    .gold-bar  { width: 48px; height: 2px; background: #D4A017; }
+    .gold-rule { border: none; border-top: 1px solid rgba(212,160,23,0.25); }
+
+    /* Scroll fade */
+    .fade-up { opacity: 0; transform: translateY(30px); }
+
+    /* Inputs */
+    .wr-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 16px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    .wr-input:focus { border-color: #D4A017; background: rgba(212,160,23,0.04); }
+    .wr-input::placeholder { color: rgba(255,255,255,0.22); }
+
+    /* CTA button */
+    .cta-btn {
+      background: #D4A017;
+      color: #0A0A0A;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 20px 40px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+      text-decoration: none;
+    }
+    .cta-btn:hover { background: #F0C040; transform: translateY(-2px); }
+    .cta-btn:active { transform: translateY(0); }
+    .cta-btn-full { width: 100%; text-align: center; }
+
+    /* Problem bullets */
+    .prob-item { border-left: 2px solid rgba(212,160,23,0.3); padding-left: 24px; }
+
+    /* Fluid headings */
+    .h-hero  { font-size: clamp(42px, 7.5vw, 88px); line-height: 1.02; }
+    .h-sec   { font-size: clamp(28px, 4vw, 50px); line-height: 1.1; }
+    .h-med   { font-size: clamp(22px, 2.8vw, 36px); line-height: 1.15; }
+
+    /* Avatar initials */
+    .avatar-lg {
+      width: 120px; height: 120px;
+      background: linear-gradient(135deg, #D4A017 0%, #F0C040 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 42px;
+      color: #0A0A0A;
+      flex-shrink: 0;
+    }
+    .avatar-sm {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #D4A017 0%, #F0C040 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #0A0A0A;
+      flex-shrink: 0;
+    }
+
+    /* Cards */
+    .feature-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+      padding: 32px 28px;
+      transition: border-color 0.3s, background 0.3s, transform 0.2s;
+    }
+    .feature-card:hover {
+      border-color: rgba(212,160,23,0.4);
+      background: rgba(212,160,23,0.04);
+      transform: translateY(-3px);
+    }
+
+    /* Comparison table */
+    .comp-table th, .comp-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      text-align: center;
+    }
+    .comp-table th { font-family: 'Montserrat', sans-serif; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; }
+    .comp-table td:first-child { text-align: left; color: rgba(255,255,255,0.55); font-size: 14px; }
+
+    /* Step numbers */
+    .step-num {
+      width: 48px; height: 48px;
+      border: 1px solid #D4A017;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 20px;
+      color: #D4A017;
+      flex-shrink: 0;
+    }
+
+    /* Timeline */
+    .timeline-item { border-left: 2px solid rgba(212,160,23,0.3); padding-left: 24px; position: relative; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -5px; top: 6px;
+      width: 8px; height: 8px;
+      background: #D4A017;
+      border-radius: 50%;
+    }
+
+    /* WhatsApp float */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 58px; height: 58px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      box-shadow: 0 4px 24px rgba(37,211,102,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .whatsapp-float:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 30px rgba(37,211,102,0.45);
+    }
+
+    /* Blockquote style */
+    .testimonial-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+      padding: 32px 28px;
+    }
+
+    /* Road card */
+    .road-card-dark {
+      background: #181818;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 36px 30px;
+    }
+    .road-card-gold {
+      background: #D4A017;
+      padding: 36px 30px;
+      color: #0A0A0A;
+    }
+
+    /* Scenario cards */
+    .scenario-a {
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 40px 32px;
+    }
+    .scenario-b {
+      background: #D4A017;
+      padding: 40px 32px;
+      color: #0A0A0A;
+    }
+
+    /* Select dropdown dark */
+    .wr-input option {
+      background: #111;
+      color: #fff;
+    }
+
+    /* Step section — responsive grid */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    @media (min-width: 768px) {
+      .steps-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+      .step-item {
+        border-right: 1px solid rgba(255,255,255,0.06);
+        border-bottom: none !important;
+      }
+      .step-item:last-child { border-right: none; }
+    }
+    .step-item {
+      padding: 28px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .step-item:last-child { border-bottom: none; }
+
+    /* Gold band divider */
+    .band-gold {
+      background: #D4A017;
+      padding: 28px 24px;
+    }
+
+    /* Animated gold underline on headings */
+    .gold-underline {
+      display: inline-block;
+      position: relative;
+    }
+    .gold-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 100%; height: 2px;
+      background: #D4A017;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .gold-underline:hover::after { transform: scaleX(1); }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HEADER — sticky blur
+  ═══════════════════════════════════════════════════════════ -->
+  <header style="position:fixed;top:0;left:0;right:0;z-index:50;border-bottom:1px solid rgba(255,255,255,0.06);background:rgba(10,10,10,0.92);backdrop-filter:blur(14px);" class="px-6 md:px-16 py-4 flex items-center justify-between">
+    <img src="brand-assets/LOGO-WR.webp" alt="Wedding Revolution" class="h-9 md:h-10 object-contain">
+    <span class="font-label text-[9px] tracking-[0.25em] text-gold uppercase hidden sm:block">Wedding Check-Up — Diagnosi del tuo business</span>
+    <a href="#form" class="hidden md:block cta-btn text-[10px] px-5 py-3" style="letter-spacing:0.15em;">
+      Prenota la chiamata
+    </a>
+  </header>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       HERO — full screen
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="hero-section px-6 md:px-16">
+    <div class="max-w-5xl mx-auto w-full">
+
+      <div id="hero-tag" class="mb-7">
+        <span class="font-label text-[10px] tracking-[0.3em] text-gold uppercase">Wedding Revolution — Wedding Check-Up</span>
+      </div>
+
+      <h1 id="hero-h1" class="h-hero font-display font-black text-white mb-7" style="max-width:820px;">
+        Sai che qualcosa<br>
+        <em style="color:#D4A017;font-style:italic;">non funziona.</em><br>
+        Ma non sai cosa.
+      </h1>
+
+      <p id="hero-sub" class="font-sans text-white/60 text-lg md:text-xl leading-relaxed mb-10" style="max-width:560px;">
+        Il Wedding Check-Up è la diagnosi completa della tua azienda nel matrimonio: capisci dove stai perdendo le coppie, perché ti stanno scegliendo di meno, e quali strumenti ti servono davvero per tornare a crescere.
+      </p>
+
+      <div id="hero-cta-wrap">
+        <a href="#form" class="cta-btn text-[13px]" style="padding:22px 48px;">
+          PRENOTA UNA CHIAMATA CON UN TUTOR
+        </a>
+      </div>
+
+      <!-- Stats bar -->
+      <div id="hero-bar" class="mt-16 pt-7" style="border-top:1px solid rgba(255,255,255,0.09);">
+        <div class="flex flex-wrap gap-8 items-center">
+          <div>
+            <div class="font-display font-bold text-2xl text-gold">25+</div>
+            <div class="font-label text-[9px] tracking-[0.2em] text-white/38 uppercase mt-1">Anni nel settore</div>
+          </div>
+          <div style="width:1px;height:34px;background:rgba(255,255,255,0.09);" class="hidden sm:block"></div>
+          <div>
+            <div class="font-display font-bold text-2xl text-gold">2.000+</div>
+            <div class="font-label text-[9px] tracking-[0.2em] text-white/38 uppercase mt-1">Professionisti formati</div>
+          </div>
+          <div style="width:1px;height:34px;background:rgba(255,255,255,0.09);" class="hidden sm:block"></div>
+          <div>
+            <div class="font-display font-bold text-2xl text-gold">100%</div>
+            <div class="font-label text-[9px] tracking-[0.2em] text-white/38 uppercase mt-1">Diagnosi su misura</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- Gold credibility band -->
+  <div class="band-gold px-6 md:px-16">
+    <div class="max-w-5xl mx-auto flex flex-wrap gap-8 md:gap-16 items-center justify-between">
+      <span class="font-label text-[11px] tracking-[0.2em] text-dark/70 uppercase font-bold">Wedding Revolution</span>
+      <span class="font-label text-[11px] tracking-[0.15em] text-dark/80 uppercase">25+ anni nel settore matrimonio</span>
+      <span class="font-label text-[11px] tracking-[0.15em] text-dark/80 uppercase">2.000+ professionisti formati</span>
+      <span class="font-label text-[11px] tracking-[0.15em] text-dark/80 uppercase">La più grande community italiana</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 1 — IL QUADRO
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-dark px-6 md:px-16 py-24 md:py-32" id="problema">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <h2 class="h-sec font-display font-black text-white mb-14 fade-up" style="max-width:740px;">
+        Se lavori nel matrimonio, almeno una di queste cose ti suona familiare.
+      </h2>
+
+      <div class="grid md:grid-cols-1 gap-6 mb-20">
+
+        <div class="prob-item fade-up">
+          <span class="text-red-400 mr-2">❌</span>
+          <span class="text-white/80 leading-relaxed">Ricevi <strong class="text-white">meno richieste di un tempo</strong>. Oppure ne ricevi tante, ma la maggior parte sparisce dopo il primo messaggio.</span>
+        </div>
+
+        <div class="prob-item fade-up">
+          <span class="text-red-400 mr-2">❌</span>
+          <span class="text-white/80 leading-relaxed">Gli appuntamenti sembrano andare bene — la coppia ride, annuisce, ti dice che sei proprio quello che cercavano. Poi ti scrive che <strong class="text-white">"ci pensa un attimo."</strong> E non si fa più sentire.</span>
+        </div>
+
+        <div class="prob-item fade-up">
+          <span class="text-red-400 mr-2">❌</span>
+          <span class="text-white/80 leading-relaxed">Quando dici il prezzo, l'aria cambia. Ti chiedono il preventivo <strong class="text-white">"per parlarne con calma"</strong> — ma in realtà lo usano per tirare sul prezzo con qualcun altro.</span>
+        </div>
+
+        <div class="prob-item fade-up">
+          <span class="text-red-400 mr-2">❌</span>
+          <span class="text-white/80 leading-relaxed">Guardi i competitor e non capisci come facciano. <strong class="text-white">Fanno un lavoro peggiore del tuo, ma hanno l'agenda piena.</strong></span>
+        </div>
+
+        <div class="prob-item fade-up">
+          <span class="text-red-400 mr-2">❌</span>
+          <span class="text-white/80 leading-relaxed">A fine anno i conti non tornano mai come dovrebbero. <strong class="text-white">Il fatturato magari c'è, ma il margine no.</strong></span>
+        </div>
+
+      </div>
+
+      <!-- Fattori di mercato -->
+      <div class="grid md:grid-cols-2 gap-12 md:gap-20 items-start">
+
+        <div class="fade-up">
+          <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-5">Il contesto</p>
+          <h3 class="h-med font-display font-black text-white mb-6">Non è colpa tua.</h3>
+          <p class="text-white/60 leading-relaxed mb-8">
+            Il mercato è cambiato in modo radicale. E se non stai cambiando con lui, stai perdendo terreno ogni giorno — senza rendertene conto.
+          </p>
+
+          <div class="space-y-6">
+            <div class="flex gap-4 items-start fade-up">
+              <div style="width:36px;height:36px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.8" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 0 0 .12 2.18 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.09a16 16 0 006 6l.56-.56a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+              </div>
+              <div>
+                <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-1">I Social</p>
+                <p class="text-white/55 text-sm leading-relaxed">I giovani passano in media <strong class="text-white/80">sei ore al giorno sul web</strong>. Quando arrivano da te, si sono già fatti un'idea.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start fade-up">
+              <div style="width:36px;height:36px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
+              </div>
+              <div>
+                <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-1">L'Intelligenza Artificiale</p>
+                <p class="text-white/55 text-sm leading-relaxed">Il <strong class="text-white/80">53% delle coppie</strong> la usa per cercare e scegliere i fornitori.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start fade-up">
+              <div style="width:36px;height:36px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+              </div>
+              <div>
+                <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-1">L'Aumento della Concorrenza</p>
+                <p class="text-white/55 text-sm leading-relaxed">Chiunque con una pagina Instagram può <strong class="text-white/80">sembrare professionale</strong>.</p>
+              </div>
+            </div>
+
+            <div class="flex gap-4 items-start fade-up">
+              <div style="width:36px;height:36px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <div>
+                <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-1">La Diminuzione dei Matrimoni</p>
+                <p class="text-white/55 text-sm leading-relaxed">Ogni anno in Italia si celebrano il <strong class="text-white/80">7% in meno di matrimoni</strong>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chiusura impatto -->
+        <div class="fade-up">
+          <div style="background:rgba(212,160,23,0.07);border:1px solid rgba(212,160,23,0.25);padding:40px 32px;">
+            <p class="font-display font-black text-2xl text-white mb-4" style="line-height:1.3;">
+              "Quello che non vedi<br>ti sta costando<br><span style="color:#D4A017;">decine di migliaia di euro</span><br>ogni anno."
+            </p>
+            <hr class="gold-rule my-6">
+            <p class="text-white/50 text-sm leading-relaxed">
+              Non è una questione di lavorare di più. È una questione di capire <strong class="text-white/70">esattamente dove si stanno rompendo le cose</strong> nel tuo processo.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 2 — LA SCELTA
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-black px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <h2 class="h-sec font-display font-black text-white mb-14 fade-up">
+        A questo punto hai due strade.
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-14">
+
+        <!-- Strada 1 — Negativa -->
+        <div class="road-card-dark fade-up">
+          <p class="font-label text-[10px] tracking-[0.25em] text-white/30 uppercase mb-5">Strada 1</p>
+          <h3 class="font-display font-black text-xl text-white mb-5">Continui a correggere un pezzo alla volta.</h3>
+          <div class="space-y-3">
+            <p class="text-white/50 text-sm leading-relaxed">Provi un nuovo corso. Rifai il sito. Cambi il prezzo. Assumi qualcuno per i social.</p>
+            <p class="text-white/50 text-sm leading-relaxed">Ogni intervento costa tempo, denaro ed energie. E spesso non funziona — perché stai curando il sintomo, non la causa.</p>
+            <p class="text-white/50 text-sm leading-relaxed">Tra 12 mesi sei nello stesso punto. O più indietro.</p>
+          </div>
+        </div>
+
+        <!-- Strada 2 — Positiva (oro) -->
+        <div class="road-card-gold fade-up" style="position:relative;">
+          <p class="font-label text-[10px] tracking-[0.25em] text-black/50 uppercase mb-5">Strada 2</p>
+          <h3 class="font-display font-black text-xl text-dark mb-5">Ti fermi e capisci cosa sta succedendo davvero.</h3>
+          <div class="space-y-3">
+            <p class="text-dark/70 text-sm leading-relaxed">Prima di investire altro tempo e soldi, capisci <strong>esattamente</strong> dove sta il problema.</p>
+            <p class="text-dark/70 text-sm leading-relaxed">Ottieni una mappa precisa delle priorità: cosa sistemare prima, cosa dopo, cosa eliminare del tutto.</p>
+            <p class="text-dark/80 text-sm leading-relaxed font-semibold">Il Wedding Check-Up è questa diagnosi.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="flex justify-center fade-up">
+        <a href="#form" class="cta-btn text-[13px]" style="padding:22px 52px;">
+          PRENOTA UNA CHIAMATA CON UN TUTOR
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 3 — CHI SIAMO
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-dark px-6 md:px-16 py-24 md:py-32" id="chi-siamo">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-4 fade-up">Chi c'è dietro</p>
+      <h2 class="h-sec font-display font-black text-white mb-14 fade-up">
+        Chi c'è dietro Wedding Revolution
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-14 mb-16">
+
+        <!-- Stefano -->
+        <div class="flex gap-6 items-start fade-up">
+          <div class="avatar-lg" style="border-radius:0;">S</div>
+          <div>
+            <p class="font-display font-bold text-xl text-white mb-1">Stefano Melaragni</p>
+            <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-3">Co-fondatore</p>
+            <p class="text-white/55 text-sm leading-relaxed">Imprenditore del settore matrimonio da oltre 25 anni. Ha costruito SposiAmo da zero fino a farne il primo franchising italiano del settore.</p>
+          </div>
+        </div>
+
+        <!-- Roberto -->
+        <div class="flex gap-6 items-start fade-up">
+          <div class="avatar-lg" style="border-radius:0;">R</div>
+          <div>
+            <p class="font-display font-bold text-xl text-white mb-1">Roberto Di Carlo</p>
+            <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-3">Co-fondatore</p>
+            <p class="text-white/55 text-sm leading-relaxed">Fotografo di matrimoni professionista dal 1990. Ha trasformato la sua esperienza in campo nel metodo che oggi guida centinaia di professionisti.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <p class="text-white/65 text-lg leading-relaxed mb-14 fade-up" style="max-width:680px;">
+        Stefano Melaragni e Roberto Di Carlo <strong class="text-white">non sono formatori che hanno letto qualche libro di marketing</strong>. Sono imprenditori del matrimonio da oltre 25 anni. Parlano per esperienza diretta — non per teoria.
+      </p>
+
+      <!-- Timeline -->
+      <div class="space-y-8 fade-up" style="max-width:600px;">
+
+        <div class="timeline-item">
+          <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-2">1990 – 2006</p>
+          <p class="text-white/75 leading-relaxed">Roberto gestisce uno studio fotografico specializzato in matrimoni, costruendo decenni di esperienza diretta con le coppie.</p>
+        </div>
+
+        <div class="timeline-item">
+          <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-2">2007 – 2015</p>
+          <p class="text-white/75 leading-relaxed">Insieme fondano <strong class="text-white">SposiAmo</strong>, il primo franchising italiano del settore matrimonio. <strong class="text-white">40 sedi in tutta Italia.</strong></p>
+        </div>
+
+        <div class="timeline-item" style="border-left-color:#D4A017;">
+          <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-2">2016 – Oggi</p>
+          <p class="text-white/75 leading-relaxed">Nasce <strong class="text-white">Wedding Revolution</strong>, la più grande community italiana per professionisti del matrimonio.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 4 — COS'È IL CHECK-UP
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-black px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-4 fade-up">La diagnosi</p>
+      <h2 class="h-sec font-display font-black text-white mb-6 fade-up">
+        Cos'è il Wedding Check-Up
+      </h2>
+      <p class="text-white/60 text-xl leading-relaxed mb-16 fade-up" style="max-width:640px;">
+        Non è un corso. Non è una consulenza generica. Non è motivazione.<br>
+        <strong class="text-white">È una diagnosi su misura della tua azienda.</strong>
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div class="feature-card fade-up">
+          <div class="mb-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-3">Analizziamo il tuo processo di vendita</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Dal primo contatto alla firma del contratto. Ogni punto di attrito, ogni perdita invisibile.</p>
+        </div>
+
+        <div class="feature-card fade-up">
+          <div class="mb-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-3">Guardiamo i numeri</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Fatturato, margini, tasso di conversione. I numeri non mentono — e spesso raccontano una storia diversa da quella che credi.</p>
+        </div>
+
+        <div class="feature-card fade-up">
+          <div class="mb-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-3">Valutiamo come ti presenti al mercato</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Sito, social, materiali di vendita. Come ti vedono le coppie prima ancora di incontrarti.</p>
+        </div>
+
+        <div class="feature-card fade-up" style="border-color:rgba(212,160,23,0.3);background:rgba(212,160,23,0.04);">
+          <div class="mb-5">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-white mb-3">Costruiamo la mappa delle priorità</h3>
+          <p class="text-white/50 text-sm leading-relaxed">Non ti diamo una lista infinita di cose da fare. Ti diciamo <strong class="text-white/70">cosa fare prima</strong>, con quale impatto sul business.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 5 — STRUMENTI POST CHECK-UP
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-dark px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-4 fade-up">Dopo la diagnosi</p>
+      <h2 class="h-sec font-display font-black text-white mb-6 fade-up">
+        E dopo il Check-Up, cosa c'è.
+      </h2>
+      <p class="text-white/55 text-lg leading-relaxed mb-16 fade-up" style="max-width:580px;">
+        La diagnosi è solo il punto di partenza. Se vuoi implementare i cambiamenti, hai a disposizione strumenti concreti.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+
+        <div class="feature-card fade-up" style="border-top:2px solid #D4A017;">
+          <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-4">Servizio</p>
+          <h3 class="font-display font-bold text-xl text-white mb-4">Accounter</h3>
+          <p class="text-white/55 text-sm leading-relaxed">Un team dedicato prende gli appuntamenti con le coppie <strong class="text-white/75">al posto tuo</strong>. Zero dispersione, massima concentrazione sul lavoro.</p>
+        </div>
+
+        <div class="feature-card fade-up" style="border-top:2px solid #D4A017;">
+          <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-4">Servizio</p>
+          <h3 class="font-display font-bold text-xl text-white mb-4">Brand Manager</h3>
+          <p class="text-white/55 text-sm leading-relaxed">Gestione social affidata a persone che <strong class="text-white/75">conoscono il settore matrimonio</strong>. Non agenzie generiche: specialisti del tuo mondo.</p>
+        </div>
+
+        <div class="feature-card fade-up" style="border-top:2px solid #D4A017;">
+          <p class="font-label text-[10px] tracking-[0.2em] text-gold uppercase mb-4">Servizio</p>
+          <h3 class="font-display font-bold text-xl text-white mb-4">StoryBrand</h3>
+          <p class="text-white/55 text-sm leading-relaxed">Il manifesto aziendale che mette in chiaro <strong class="text-white/75">chi sei, cosa offri e perché sceglierti</strong> — in modo che le coppie capiscano subito.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 6 — TESTIMONIANZE
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-black px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-4 fade-up">Chi l'ha già fatto</p>
+      <h2 class="h-sec font-display font-black text-white mb-14 fade-up">
+        Cosa dicono dopo il Check-Up.
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-6">
+
+        <div class="testimonial-card fade-up">
+          <p class="text-white/70 leading-relaxed mb-6 text-sm" style="font-style:italic;">
+            "Pensavo fosse un problema di prezzo. Invece il problema era nel modo in cui presentavo i pacchetti. Dopo il Check-Up ho cambiato una cosa sola — e le conversioni sono raddoppiate in tre mesi."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="avatar-sm">M</div>
+            <div>
+              <p class="font-label text-[12px] font-bold text-white">Marco R.</p>
+              <p class="font-label text-[10px] tracking-[0.15em] text-white/35 uppercase">Fotografo, Milano</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up">
+          <p class="text-white/70 leading-relaxed mb-6 text-sm" style="font-style:italic;">
+            "Avevo paura di sentirmi dire cose che già sapevo. Invece mi hanno mostrato un problema che non avevo mai visto — e che mi costava ogni settimana senza che me ne accorgessi."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="avatar-sm">L</div>
+            <div>
+              <p class="font-label text-[12px] font-bold text-white">Laura F.</p>
+              <p class="font-label text-[10px] tracking-[0.15em] text-white/35 uppercase">Wedding Planner, Roma</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up">
+          <p class="text-white/70 leading-relaxed mb-6 text-sm" style="font-style:italic;">
+            "In 15 anni di lavoro non avevo mai fatto una cosa del genere. Ho sempre pensato di dover andare avanti, non di fermarmi. Il Check-Up mi ha cambiato prospettiva completamente."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="avatar-sm">G</div>
+            <div>
+              <p class="font-label text-[12px] font-bold text-white">Giorgio M.</p>
+              <p class="font-label text-[10px] tracking-[0.15em] text-white/35 uppercase">Location Manager, Napoli</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-card fade-up">
+          <p class="text-white/70 leading-relaxed mb-6 text-sm" style="font-style:italic;">
+            "La mappa delle priorità è stata illuminante. Non è una lista di 20 cose da fare: è un piano con 3 azioni precise, in ordine, con l'impatto che ciascuna avrà. Finalmente avevo chiarezza."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="avatar-sm">A</div>
+            <div>
+              <p class="font-label text-[12px] font-bold text-white">Anna C.</p>
+              <p class="font-label text-[10px] tracking-[0.15em] text-white/35 uppercase">Atelier, Firenze</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 7 — PER CHI È
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-dark px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="grid md:grid-cols-2 gap-14">
+
+        <!-- Per chi è -->
+        <div class="fade-up">
+          <div class="gold-bar mb-8"></div>
+          <h2 class="h-med font-display font-black text-white mb-8">
+            Il Check-Up fa per te se...
+          </h2>
+          <div class="space-y-5">
+            <div class="flex gap-3 items-start">
+              <span style="color:#D4A017;font-size:18px;margin-top:2px;">✓</span>
+              <p class="text-white/70 leading-relaxed">Lavori nel settore matrimonio da almeno due anni e hai già un business avviato.</p>
+            </div>
+            <div class="flex gap-3 items-start">
+              <span style="color:#D4A017;font-size:18px;margin-top:2px;">✓</span>
+              <p class="text-white/70 leading-relaxed">Senti che qualcosa non funziona, ma non riesci a identificare esattamente dove.</p>
+            </div>
+            <div class="flex gap-3 items-start">
+              <span style="color:#D4A017;font-size:18px;margin-top:2px;">✓</span>
+              <p class="text-white/70 leading-relaxed">Sei disposto a fermarti, analizzare, e fare cambiamenti concreti.</p>
+            </div>
+            <div class="flex gap-3 items-start">
+              <span style="color:#D4A017;font-size:18px;margin-top:2px;">✓</span>
+              <p class="text-white/70 leading-relaxed">Vuoi smettere di fare aggiustamenti casuali e avere una strategia precisa.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Per chi NON è -->
+        <div class="fade-up">
+          <div style="width:48px;height:2px;background:rgba(255,255,255,0.2);" class="mb-8"></div>
+          <h2 class="h-med font-display font-black text-white/70 mb-8">
+            Il Check-Up NON fa per te se...
+          </h2>
+          <div class="space-y-5">
+            <div class="flex gap-3 items-start">
+              <span style="color:rgba(255,255,255,0.25);font-size:18px;margin-top:2px;">✗</span>
+              <p class="text-white/40 leading-relaxed">Stai cercando qualcuno che ti dica che tutto va bene e non devi cambiare niente.</p>
+            </div>
+            <div class="flex gap-3 items-start">
+              <span style="color:rgba(255,255,255,0.25);font-size:18px;margin-top:2px;">✗</span>
+              <p class="text-white/40 leading-relaxed">Non sei disposto a mettere in discussione il modo in cui lavori oggi.</p>
+            </div>
+            <div class="flex gap-3 items-start">
+              <span style="color:rgba(255,255,255,0.25);font-size:18px;margin-top:2px;">✗</span>
+              <p class="text-white/40 leading-relaxed">Cerchi una formula magica che risolva tutto senza sforzo da parte tua.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 8 — COME FUNZIONA
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-black px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-4 fade-up">Il processo</p>
+      <h2 class="h-sec font-display font-black text-white mb-16 fade-up">
+        Come funziona
+      </h2>
+
+      <div class="steps-grid" style="border:1px solid rgba(255,255,255,0.07);">
+
+        <div class="step-item fade-up">
+          <div class="step-num mx-auto mb-5">1</div>
+          <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-3">Parli con un tutor</p>
+          <p class="text-white/45 text-sm leading-relaxed">Una chiamata gratuita per capire la tua situazione.</p>
+        </div>
+
+        <div class="step-item fade-up">
+          <div class="step-num mx-auto mb-5">2</div>
+          <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-3">Prenoti il Check-Up</p>
+          <p class="text-white/45 text-sm leading-relaxed">Scegli la modalità (online o in azienda) e blocchi la data.</p>
+        </div>
+
+        <div class="step-item fade-up">
+          <div class="step-num mx-auto mb-5">3</div>
+          <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-3">Compili il questionario</p>
+          <p class="text-white/45 text-sm leading-relaxed">Ci invii i dati della tua azienda prima dell'incontro.</p>
+        </div>
+
+        <div class="step-item fade-up">
+          <div class="step-num mx-auto mb-5">4</div>
+          <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-3">Incontro con l'analista</p>
+          <p class="text-white/45 text-sm leading-relaxed">Sessione approfondita per analizzare ogni aspetto del business.</p>
+        </div>
+
+        <div class="step-item fade-up" style="background:rgba(212,160,23,0.06);">
+          <div class="step-num mx-auto mb-5" style="background:#D4A017;color:#0A0A0A;border-color:#D4A017;">5</div>
+          <p class="font-label text-[11px] tracking-[0.12em] text-gold uppercase mb-3">Ricevi la mappa</p>
+          <p class="text-white/45 text-sm leading-relaxed">La mappa delle priorità con le azioni specifiche per il tuo caso.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 9 — MODALITÀ
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-dark px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <p class="font-label text-[10px] tracking-[0.25em] text-gold uppercase mb-4 fade-up">Le opzioni</p>
+      <h2 class="h-sec font-display font-black text-white mb-4 fade-up">
+        Scegli la tua modalità
+      </h2>
+      <p class="text-white/50 leading-relaxed mb-14 fade-up">
+        <span style="color:#D4A017;font-weight:600;">Posti limitati.</span> Ogni Check-Up richiede ore di analisi approfondita.
+      </p>
+
+      <div class="overflow-x-auto fade-up">
+        <table class="comp-table w-full" style="border-collapse:collapse;min-width:520px;">
+          <thead>
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+              <th style="text-align:left;padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.35);"></th>
+              <th style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.55);">Check-Up Online</th>
+              <th style="padding:14px 20px;font-family:'Montserrat',sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#D4A017;background:rgba(212,160,23,0.07);">Check-Up In Azienda</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Durata</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);">2–3 ore</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:#fff;font-weight:600;background:rgba(212,160,23,0.05);">Giornata intera</td>
+            </tr>
+            <tr>
+              <td>Modalità</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.7);">Videochiamata</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:#fff;font-weight:600;background:rgba(212,160,23,0.05);">Dal vivo</td>
+            </tr>
+            <tr>
+              <td>Analisi completa</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:#D4A017;">✓</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:#D4A017;background:rgba(212,160,23,0.05);">✓</td>
+            </tr>
+            <tr>
+              <td>Mappa priorità</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:#D4A017;">✓</td>
+              <td style="text-align:center;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);color:#D4A017;background:rgba(212,160,23,0.05);">✓</td>
+            </tr>
+            <tr>
+              <td>Visita fisica struttura</td>
+              <td style="text-align:center;padding:14px 20px;color:rgba(255,255,255,0.2);">—</td>
+              <td style="text-align:center;padding:14px 20px;color:#D4A017;background:rgba(212,160,23,0.05);font-weight:700;">✓</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SEZIONE 10 — CHIUSURA
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-black px-6 md:px-16 py-24 md:py-32">
+    <div class="max-w-5xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <h2 class="h-sec font-display font-black text-white mb-14 fade-up" style="max-width:600px;">
+        Una domanda prima di chiudere.
+      </h2>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-16">
+
+        <!-- Scenario A -->
+        <div class="scenario-a fade-up">
+          <p class="font-label text-[10px] tracking-[0.25em] text-white/25 uppercase mb-5">Tra 12 mesi, senza il Check-Up</p>
+          <div class="space-y-4">
+            <p class="text-white/55 leading-relaxed">Continui a perdere coppie senza capire perché. Provi soluzioni random che costano tempo e soldi.</p>
+            <p class="text-white/55 leading-relaxed">I competitor ti sorpassano. Il mercato si restringe. Il margine cala.</p>
+            <p class="text-white/40 leading-relaxed font-medium">Stai nello stesso punto — o più indietro.</p>
+          </div>
+        </div>
+
+        <!-- Scenario B -->
+        <div class="scenario-b fade-up">
+          <p class="font-label text-[10px] tracking-[0.25em] text-dark/50 uppercase mb-5">Dopo il Check-Up</p>
+          <div class="space-y-4">
+            <p class="text-dark/75 leading-relaxed">Sai esattamente dove stai perdendo le coppie. Hai una mappa delle priorità.</p>
+            <p class="text-dark/75 leading-relaxed">Ogni investimento che fai è mirato. Ogni azione che prendi ha uno scopo preciso.</p>
+            <p class="text-dark font-bold leading-relaxed">Cresci con metodo — non per caso.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center fade-up">
+        <p class="text-white/60 text-xl leading-relaxed mb-8" style="max-width:480px;margin-left:auto;margin-right:auto;">
+          La differenza tra i due è <strong class="text-white">una chiamata.</strong> Oggi.
+        </p>
+        <a href="#form" class="cta-btn text-[13px]" style="padding:22px 52px;">
+          PRENOTA UNA CHIAMATA CON UN TUTOR
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FORM — PRENOTAZIONE
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="s-dark px-6 md:px-16 py-24 md:py-32" id="form">
+    <div class="max-w-2xl mx-auto">
+
+      <div class="gold-bar mb-8 fade-up"></div>
+      <h2 class="h-sec font-display font-black text-white mb-4 fade-up">
+        Prenota la tua chiamata gratuita
+      </h2>
+      <p class="text-white/50 text-lg leading-relaxed mb-12 fade-up">
+        Nessun impegno, nessuna pressione — solo chiarezza.
+      </p>
+
+      <form action="mailto:info@weddingrevolution.it" method="post" enctype="text/plain" class="space-y-5 fade-up">
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Nome e Cognome *</label>
+            <input type="text" name="nome" required placeholder="Mario Rossi" class="wr-input">
+          </div>
+          <div>
+            <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Email *</label>
+            <input type="email" name="email" required placeholder="mario@esempio.it" class="wr-input">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Telefono *</label>
+          <input type="tel" name="telefono" required placeholder="+39 333 000 0000" class="wr-input">
+        </div>
+
+        <div>
+          <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Categoria professionale *</label>
+          <select name="categoria" required class="wr-input" style="appearance:none;cursor:pointer;">
+            <option value="" disabled selected>Seleziona la tua categoria</option>
+            <option value="location">Location / Villa</option>
+            <option value="catering">Catering / Ristorante</option>
+            <option value="foto">Fotografo / Videomaker</option>
+            <option value="planner">Wedding Planner</option>
+            <option value="fiorista">Fiorista</option>
+            <option value="atelier">Atelier / Sartoria</option>
+            <option value="altro">Altro</option>
+          </select>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-5">
+          <div>
+            <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Giorno preferito *</label>
+            <select name="giorno" required class="wr-input" style="appearance:none;cursor:pointer;">
+              <option value="" disabled selected>Seleziona il giorno</option>
+              <option value="lunedi">Lunedì</option>
+              <option value="martedi">Martedì</option>
+              <option value="mercoledi">Mercoledì</option>
+              <option value="giovedi">Giovedì</option>
+              <option value="venerdi">Venerdì</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Fascia oraria preferita *</label>
+            <select name="fascia_oraria" required class="wr-input" style="appearance:none;cursor:pointer;">
+              <option value="" disabled selected>Seleziona la fascia</option>
+              <option value="9-10">9:00 – 10:00</option>
+              <option value="10-11">10:00 – 11:00</option>
+              <option value="11-12">11:00 – 12:00</option>
+              <option value="14-15">14:00 – 15:00</option>
+              <option value="15-16">15:00 – 16:00</option>
+              <option value="16-17">16:00 – 17:00</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label text-[10px] tracking-[0.2em] text-white/40 uppercase mb-2">Note aggiuntive <span class="text-white/25">(facoltativo)</span></label>
+          <textarea name="note" rows="4" placeholder="Raccontaci brevemente la tua situazione attuale..." class="wr-input" style="resize:vertical;min-height:100px;"></textarea>
+        </div>
+
+        <div class="pt-4">
+          <button type="submit" class="cta-btn cta-btn-full" style="font-size:14px;padding:24px 40px;">
+            PRENOTA LA MIA CHIAMATA GRATUITA
+          </button>
+          <p class="text-center font-label text-[10px] tracking-[0.15em] text-white/30 uppercase mt-5">
+            Riceverai una conferma via email entro 24 ore.
+          </p>
+        </div>
+
+      </form>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════════ -->
+  <footer class="s-black px-6 md:px-16 py-12" style="border-top:1px solid rgba(255,255,255,0.06);">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <img src="brand-assets/LOGO-WR.webp" alt="Wedding Revolution" class="h-8 object-contain opacity-70">
+      <p class="font-label text-[9px] tracking-[0.2em] text-white/25 uppercase text-center">
+        © 2026 Wedding Revolution — Tutti i diritti riservati
+      </p>
+      <p class="font-label text-[9px] tracking-[0.2em] text-white/25 uppercase">
+        info@weddingrevolution.it
+      </p>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       WHATSAPP FLOAT
+  ═══════════════════════════════════════════════════════════ -->
+  <a href="https://wa.me/39" class="whatsapp-float" aria-label="Scrivici su WhatsApp" target="_blank" rel="noopener">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       GSAP ANIMATIONS
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── Hero entrance
+    const heroTl = gsap.timeline({ delay: 0.15 });
+    heroTl
+      .to('#hero-tag',      { opacity:1, y:0, duration:0.7, ease:'power2.out' })
+      .to('#hero-h1',       { opacity:1, y:0, duration:0.9, ease:'power2.out' }, '-=0.45')
+      .to('#hero-sub',      { opacity:1, y:0, duration:0.7, ease:'power2.out' }, '-=0.5')
+      .to('#hero-cta-wrap', { opacity:1, y:0, duration:0.6, ease:'power2.out' }, '-=0.4')
+      .to('#hero-bar',      { opacity:1, y:0, duration:0.6, ease:'power2.out' }, '-=0.3');
+
+    // ── Scroll-triggered fade-ups
+    gsap.utils.toArray('.fade-up').forEach(el => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 86%',
+          toggleActions: 'play none none none',
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
